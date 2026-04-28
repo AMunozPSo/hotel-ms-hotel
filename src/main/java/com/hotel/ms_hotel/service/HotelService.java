@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class HotelService {
-    @Autowired
     private final HotelRepository hotelRepository;
 
     //mapeo privado
@@ -28,22 +29,33 @@ public class HotelService {
         );
     }
 
+    // Obtener todos
+    public List<HotelResponseDTO> obtenerTodos() {
+        return hotelRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
     //Buscar hoteles por id, se usa el orElse asi cuando se llame en controller no se caiga
-    public Hotel findById(Long id){
-        return hotelRepository.findById(id).orElse(null);
+    public Optional<HotelResponseDTO> findById(Long id){
+        return hotelRepository.findById(id).map(this::mapToDTO);
     }
 
     //Buscar hotel por nombre
-    public Hotel findByNombre(String nombre){
-        return hotelRepository.findByNombre(nombre);
+    public Optional<HotelResponseDTO> findByNombre(String nombre){
+        return Optional.ofNullable(hotelRepository.findByNombre(nombre))
+                .map(this::mapToDTO);
     }
 
     //Buscar hoteles por ciudad
-    public List<Hotel> findByCiudad(String ciudad) {
-        return hotelRepository.findByCiudad(ciudad);
+    public List<HotelResponseDTO> findByCiudad(String ciudad) {
+        return hotelRepository.findByCiudad(ciudad)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    //Guardar Hotel (modificado)
+    //Guardar Hotel
     public HotelResponseDTO guardar(HotelRequestDTO dto) {
         // Regla de Negocio: Verificar si el nombre ya existe
         if (hotelRepository.findByNombre(dto.getNombre()) != null) {
@@ -62,11 +74,10 @@ public class HotelService {
 
     //Eliminar hotel por ID
     public void delete(Long id){
-        //primero se valida si existe
         if(hotelRepository.existsById(id)){
-            hotelRepository.existsById(id);
-        }else {
-            throw new RuntimeException("No se puede eliminar hotel");
+            hotelRepository.deleteById(id); // <-- Aquí era delete, no exists
+        } else {
+            throw new RuntimeException("No se puede eliminar: El hotel no existe.");
         }
     }
 
