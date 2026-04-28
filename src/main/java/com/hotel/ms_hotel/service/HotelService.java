@@ -1,8 +1,11 @@
 package com.hotel.ms_hotel.service;
 
 import com.hotel.ms_hotel.Repository.HotelRepository;
+import com.hotel.ms_hotel.dto.HotelRequestDTO;
+import com.hotel.ms_hotel.dto.HotelResponseDTO;
 import com.hotel.ms_hotel.model.Hotel;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +13,19 @@ import java.util.List;
 
 @Service
 @Transactional
-
+@RequiredArgsConstructor
 public class HotelService {
     @Autowired
-    private HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
 
-    //Listar todos los hoteles
-    public List<Hotel> findAll(){
-        return hotelRepository.findAll();
+    //mapeo privado
+    private HotelResponseDTO mapToDTO(Hotel hotel) {
+        return new HotelResponseDTO(
+                hotel.getId(),
+                hotel.getNombre(),
+                hotel.getCiudad(),
+                hotel.getCategoria()
+        );
     }
 
     //Buscar hoteles por id, se usa el orElse asi cuando se llame en controller no se caiga
@@ -35,15 +43,21 @@ public class HotelService {
         return hotelRepository.findByCiudad(ciudad);
     }
 
-    //Guardar Hotel
-    public Hotel save(Hotel hotel){
-        //Regla: verificar si ya existe el nombre antes de guardar.
-        Hotel existe = hotelRepository.findByNombre(hotel.getNombre());
-        if(existe !=null && !existe.getId().equals(hotel.getId())){
-            throw new RuntimeException("El nombre del hotel ya existe");
+    //Guardar Hotel (modificado)
+    public HotelResponseDTO guardar(HotelRequestDTO dto) {
+        // Regla de Negocio: Verificar si el nombre ya existe
+        if (hotelRepository.findByNombre(dto.getNombre()) != null) {
+            throw new RuntimeException("Regla de Negocio: El nombre del hotel ya existe.");
         }
-        return  hotelRepository.save(hotel);
 
+        Hotel hotel = new Hotel(
+                null, // ID autogenerado
+                dto.getNombre(),
+                dto.getDireccion(),
+                dto.getCiudad(),
+                dto.getCategoria()
+        );
+        return mapToDTO(hotelRepository.save(hotel));
     }
 
     //Eliminar hotel por ID
