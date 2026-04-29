@@ -73,6 +73,7 @@ public class HotelService {
     }
 
     //Eliminar hotel por ID
+    @Transactional
     public void delete(Long id){
         if(hotelRepository.existsById(id)){
             hotelRepository.deleteById(id); // <-- Aquí era delete, no exists
@@ -80,6 +81,9 @@ public class HotelService {
             throw new RuntimeException("No se puede eliminar: El hotel no existe.");
         }
     }
+
+
+
 
 
 
