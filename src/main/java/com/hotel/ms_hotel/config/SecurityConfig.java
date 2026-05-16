@@ -26,9 +26,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Ruta pública para ver hoteles (GET)
+
                         .requestMatchers("/api/v1/hoteles", "/api/v1/hoteles/**").permitAll()
-                        // Todo lo demás requiere Token (POST, DELETE, PUT)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -49,7 +49,7 @@ public class HotelController {
 
     // Guardar un hotel
     @PostMapping
-    @PreAuthorize("permitAll()") // Cambiar a hasRole('ADMIN') cuando pases a producción
+    @PreAuthorize("permitAll()")
     public ResponseEntity<HotelResponseDTO> guardar(@Valid @RequestBody HotelRequestDTO dto){
         log.info(">> Registrando nuevo hotel");
         return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.guardar(dto));
@@ -57,7 +57,7 @@ public class HotelController {
 
     // Eliminar un hotel
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Cambiar a hasRole('ADMIN') cuando pases a producción
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         log.warn(">> Solicitud para eliminar hotel ID: {}", id);
         hotelService.delete(id);
