@@ -26,5 +26,4 @@ public class HotelRequestDTO {
     private  int categoria;
 
 
-
 }

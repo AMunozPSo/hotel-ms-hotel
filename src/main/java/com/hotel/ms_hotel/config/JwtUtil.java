@@ -9,7 +9,9 @@ import javax.crypto.SecretKey;
 public class JwtUtil {
 
     // Misma contraseña del otro microservicio
-    private static final String SECRET ="hotel-microservicios-secret-key-2024-segura";
+    private static final String SECRET ="hotel-microservicios-secret-key-2026-segura";
+
+    private static final long EXPIRATION = 7776000000L;
 
     private SecretKey getKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes());
