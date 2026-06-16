@@ -14,7 +14,7 @@ public class HotelResponseDTO {
     @Schema(description = "ID único del hotel", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @Schema(description = "Nombre del hotel", example = "Hotel Pullman Arica")
+    @Schema(description = "Nombre del hotel", example = "Hotel Pullman")
     private String nombre;
 
     @Schema(description = "Ciudad de ubicación", example = "Arica")

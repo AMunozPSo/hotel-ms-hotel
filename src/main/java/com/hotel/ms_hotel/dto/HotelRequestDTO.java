@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Datos requeridos para registrar un nuevo hotel")
 public class HotelRequestDTO {
 
-    @Schema(description = "Nombre único del hotel", example = "Hotel Pullman Arica")
+    @Schema(description = "Nombre único del hotel", example = "Hotel Pullman")
     @NotBlank(message = "El nombre del hotel es obligatorio")
     private String nombre;
 

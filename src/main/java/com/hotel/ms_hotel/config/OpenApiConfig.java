@@ -17,7 +17,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API Gestión de Hoteles")
                         .version("1.0.0")
-                        .description("Microservicio para la administración de hoteles del sistema"))
+                        .description("Microservicio para la administración de la infraestructura hotelera"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()

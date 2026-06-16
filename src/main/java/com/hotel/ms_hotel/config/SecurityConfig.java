@@ -20,26 +20,18 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Liberamos todas las rutas posibles que Swagger usa internamente
-                        .requestMatchers(
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
+                        // 1. Swagger, OpenAPI y la ruta interna de ERRORES (/error) liberados
+                        .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/error").permitAll()
 
-                        // 2. Liberamos las rutas de tu microservicio (públicas)
+                        // 2. Rutas públicas de tu controlador de hoteles
                         .requestMatchers("/api/v1/hoteles", "/api/v1/hoteles/**").permitAll()
 
-                        // 3. Bloqueamos todo el resto
+                        // 3. Cualquier otra petición requerirá token JWT válido
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
